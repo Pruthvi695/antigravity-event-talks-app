@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigQuery Release Notes Hub</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CSS Style Sheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar or Header Grid -->
+        <header class="app-header">
+            <div class="header-logo-section">
+                <div class="logo-wrapper">
+                    <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 6v6l4 2"></path></svg>
+                </div>
+                <div class="title-details">
+                    <h1>BigQuery Release Hub</h1>
+                    <p class="subtitle">Real-time updates, features, and deprecations from Google BigQuery</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <div class="sync-status">
+                    <span class="status-indicator online"></span>
+                    <span id="sync-text">Loading feed...</span>
+                </div>
+                <button id="refresh-btn" class="btn btn-primary" title="Sync Feed">
+                    <i data-lucide="refresh-cw" class="icon-refresh"></i>
+                    <span>Refresh</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Controls Dashboard -->
+        <section class="controls-panel">
+            <div class="search-box-wrapper">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="search-input" placeholder="Search release notes, features, functions..." aria-label="Search release notes">
+                <button id="clear-search-btn" class="clear-btn" style="display: none;">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            
+            <div class="filters-wrapper">
+                <div class="filter-label">Filter by type:</div>
+                <div class="filter-pills">
+                    <button class="filter-pill active" data-type="all">All Updates</button>
+                    <button class="filter-pill" data-type="feature">
+                        <span class="pill-dot feature"></span>Features
+                    </button>
+                    <button class="filter-pill" data-type="change">
+                        <span class="pill-dot change"></span>Changes
+                    </button>
+                    <button class="filter-pill" data-type="deprecated">
+                        <span class="pill-dot deprecated"></span>Deprecated
+                    </button>
+                    <button class="filter-pill" data-type="other">
+                        <span class="pill-dot other"></span>Others
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Results Stats -->
+            <div class="results-meta">
+                <div class="meta-count" id="meta-count-text">Showing 0 updates</div>
+            </div>
+
+            <!-- Feed list -->
+            <div class="feed-container" id="feed-container">
+                <!-- Skeleton Loader Placeholders -->
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <div class="skeleton-date"></div>
+                        <div class="skeleton-badge"></div>
+                    </div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                    <div class="skeleton-footer"></div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <div class="skeleton-date"></div>
+                        <div class="skeleton-badge"></div>
+                    </div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                    <div class="skeleton-footer"></div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-header">
+                        <div class="skeleton-date"></div>
+                        <div class="skeleton-badge"></div>
+                    </div>
+                    <div class="skeleton-body">
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                    <div class="skeleton-footer"></div>
+                </div>
+            </div>
+            
+            <!-- Empty state -->
+            <div class="empty-state" id="empty-state" style="display: none;">
+                <div class="empty-icon-wrapper">
+                    <i data-lucide="inbox"></i>
+                </div>
+                <h3>No updates found</h3>
+                <p>Try adjusting your keyword filter or check back later for new releases.</p>
+                <button class="btn btn-secondary" id="reset-filters-btn">Reset Filters</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer-bar">
+            <p>BigQuery Release Notes Hub &copy; 2026. Built with Python Flask, CSS Grid & vanilla JS.</p>
+        </footer>
+    </div>
+
+    <!-- Twitter Composer Modal -->
+    <div class="modal-overlay" id="tweet-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-header-title">
+                    <i data-lucide="twitter" class="x-logo"></i>
+                    <h2>Share on X / Twitter</h2>
+                </div>
+                <button class="close-modal-btn" id="close-modal-btn" aria-label="Close modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Tweet Preview Card -->
+                <div class="tweet-preview-container">
+                    <div class="tweet-preview-header">
+                        <div class="tweet-avatar">BQ</div>
+                        <div class="tweet-user-info">
+                            <span class="tweet-display-name">BigQuery News Feed</span>
+                            <span class="tweet-handle">@bq_release_feed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tweet-preview-content">
+                        <!-- Prefilled by Javascript -->
+                        <textarea id="tweet-textarea" class="tweet-composer-textarea" placeholder="What's happening?" maxlength="1000"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Character indicator and warnings -->
+                <div class="composer-controls">
+                    <div class="character-counter-wrapper">
+                        <svg class="progress-ring" width="36" height="36">
+                            <circle class="progress-ring-bg" stroke="#e1e8ed" stroke-width="3" fill="transparent" r="14" cx="18" cy="18"/>
+                            <circle class="progress-ring-circle" id="char-progress" stroke="#1da1f2" stroke-width="3" fill="transparent" r="14" cx="18" cy="18"/>
+                        </svg>
+                        <span id="char-count-number" class="char-count-text">280</span>
+                    </div>
+                    <div id="char-warning-msg" class="char-warning" style="display: none;">
+                        Tweet exceeds standard 280 characters limit.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-tweet-btn">Cancel</button>
+                <button class="btn btn-twitter" id="submit-tweet-btn">
+                    <i data-lucide="send"></i>
+                    <span>Tweet / Post</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
